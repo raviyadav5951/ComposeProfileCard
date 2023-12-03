@@ -30,30 +30,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                MainScreen()
+                UserListScreen()
             }
         }
     }
@@ -61,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalMaterial3Api
 @Composable
-fun MainScreen(userProfiles:List<UserProfile> = userProfileList) {
+fun UserListScreen(userProfiles:List<UserProfile> = userProfileList) {
 
     Scaffold( topBar = { AppBar()})
     {innerPadding ->
@@ -71,13 +67,6 @@ fun MainScreen(userProfiles:List<UserProfile> = userProfileList) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-//                Column {
-//
-//                    for(userProfile in userProfiles)
-//
-//                        ProfileCard(userProfile)
-//                    //ProfileCard(userProfileList[1])
-//                }
 
                 LazyColumn{
                     items(userProfiles){
@@ -125,7 +114,7 @@ fun ProfileCard(userProfile: UserProfile){
             verticalAlignment =Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start){
 
-            ProfilePicture(status = userProfile.status, imageRes = userProfile.resourceId)
+            ProfilePicture(status = userProfile.status, imageRes = userProfile.resourceId, imageSize = 72.dp)
             ProfileContent(name = userProfile.name,onlineStatus = userProfile.status)
         }
 
@@ -135,8 +124,8 @@ fun ProfileCard(userProfile: UserProfile){
 @Composable
 fun ProfileContent(name:String,onlineStatus:Boolean) {
     Column(modifier= Modifier
-        .fillMaxWidth()
-        .padding(8.dp),) {
+        .padding(8.dp),
+        ) {
         Text(text = name,
             style=MaterialTheme.typography.headlineMedium)
 
@@ -145,14 +134,11 @@ fun ProfileContent(name:String,onlineStatus:Boolean) {
         "Active now"
             else "offline",
             style=MaterialTheme.typography.bodyMedium)
-
     }
-
-
 }
 
 @Composable
-fun ProfilePicture(status:Boolean,imageRes:String) {
+fun ProfilePicture(status:Boolean,imageRes:String,imageSize: Dp) {
     Card(shape = CircleShape,
         modifier=Modifier.padding(10.dp),
         border = BorderStroke(width=1.dp,
@@ -175,18 +161,58 @@ fun ProfilePicture(status:Boolean,imageRes:String) {
 //        
         
         Image(painter =
-        rememberAsyncImagePainter(model = imageRes), contentDescription = "profile",
-            modifier = Modifier.size(72.dp),
+        rememberAsyncImagePainter(model = imageRes),
+            contentDescription = "profile",
+            modifier = Modifier.size(imageSize),
             contentScale = ContentScale.Crop)
         
     }
 
 }
 
+@ExperimentalMaterial3Api
+@Composable
+fun UserDetailScreen(userProfile:UserProfile = userProfileList[0]) {
+
+    Scaffold( topBar = { AppBar()})
+    {innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
+
+                Column (modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment =Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top){
+
+                    ProfilePicture(status = userProfile.status, imageRes = userProfile.resourceId, imageSize = 240.dp)
+                    ProfileContent(name = userProfile.name,onlineStatus = userProfile.status)
+                }
+
+
+            }
+        }
+
+    }
+
+
+}
+
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun UserListPreview() {
     MyApplicationTheme {
-        MainScreen()
+        UserListScreen()
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun UserDetailPreview() {
+    MyApplicationTheme {
+        UserDetailScreen()
+    }
+}
+
