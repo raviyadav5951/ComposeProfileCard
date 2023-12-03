@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -42,6 +44,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -67,13 +71,22 @@ fun MainScreen(userProfiles:List<UserProfile> = userProfileList) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-                Column {
+//                Column {
+//
+//                    for(userProfile in userProfiles)
+//
+//                        ProfileCard(userProfile)
+//                    //ProfileCard(userProfileList[1])
+//                }
 
-                    for(userProfile in userProfiles)
-
-                        ProfileCard(userProfile)
-                    //ProfileCard(userProfileList[1])
+                LazyColumn{
+                    items(userProfiles){
+                        userProfile->
+                        ProfileCard(userProfile = userProfile)
+                    }
                 }
+
+
 
             }
     }
@@ -104,7 +117,7 @@ fun ProfileCard(userProfile: UserProfile){
     Card(modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight(align = Alignment.Top)
-        .padding(16.dp),
+        .padding(8.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
 
@@ -139,18 +152,33 @@ fun ProfileContent(name:String,onlineStatus:Boolean) {
 }
 
 @Composable
-fun ProfilePicture(status:Boolean,imageRes:Int) {
+fun ProfilePicture(status:Boolean,imageRes:String) {
     Card(shape = CircleShape,
-        modifier=Modifier.padding(16.dp),
+        modifier=Modifier.padding(10.dp),
         border = BorderStroke(width=1.dp,
             color = if(status)
                 Color.Green
         else Color.Red),
     ) {
-        Image(painter = painterResource(id=imageRes) ,
-            contentDescription = "profile pic",
+//        Image(painter = painterResource(id=imageRes) ,
+//            contentDescription = "profile pic",
+//            modifier = Modifier.size(72.dp),
+//            contentScale = ContentScale.Crop)
+
+
+//        AsyncImage(
+//            //model ="https://randomuser.me/api/portraits/men/32.jpg",
+//            model=imageRes,
+//            contentDescription = "test",
+//            modifier = Modifier.size(72.dp),
+//            contentScale = ContentScale.Crop)
+//        
+        
+        Image(painter =
+        rememberAsyncImagePainter(model = imageRes), contentDescription = "profile",
             modifier = Modifier.size(72.dp),
             contentScale = ContentScale.Crop)
+        
     }
 
 }
